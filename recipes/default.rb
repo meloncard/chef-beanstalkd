@@ -25,7 +25,7 @@ template "#{template_path}" do
 		:opts => node[:beanstalkd][:opts],
 		:start_during_boot => node[:beanstalkd][:start_during_boot]
 	)
-	notifies :restart, "service[beanstalkd]"
+	notifies :restart, resources(:service => "beanstalkd")
 end
 
 service "beanstalkd" do
