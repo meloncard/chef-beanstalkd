@@ -16,6 +16,15 @@ case node[:platform]
 		template_path = "/etc/sysconfig/beanstalkd" #templates/default
 end
 
+service "beanstalkd" do
+	start_command "/etc/init.d/beanstalkd start"
+	stop_command "/etc/init.d/beanstalkd stop"
+	status_command "/etc/init.d/beanstalkd status"
+	supports [:start, :stop, :status]
+    #starts the service if it's not running and enables it to start at system boot time
+	action :nothing
+end
+
 template "#{template_path}" do
 	source "beanstalkd.erb"
 	owner "root"
@@ -25,14 +34,5 @@ template "#{template_path}" do
 		:opts => node[:beanstalkd][:opts],
 		:start_during_boot => node[:beanstalkd][:start_during_boot]
 	)
-	notifies :restart, "service[beanstalkd]"
-end
-
-service "beanstalkd" do
-	start_command "/etc/init.d/beanstalkd start"
-	stop_command "/etc/init.d/beanstalkd stop"
-	status_command "/etc/init.d/beanstalkd status"
-	supports [:start, :stop, :status]
-    #starts the service if it's not running and enables it to start at system boot time
-	action [:enable, :start]
+	notifies :restart, resources(:service => "beanstalkd")
 end
