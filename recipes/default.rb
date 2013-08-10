@@ -25,6 +25,14 @@ service "beanstalkd" do
 	action :nothing
 end
 
+# Create the binlog directory
+if node[:beanstalkd][:opts][:b]
+	directory node[:beanstalkd][:opts][:b] do
+	  owner node[:beanstalkd][:opts][:u] if node[:beanstalkd][:opts][:u]
+	  mode '0755'
+	end
+end
+
 template "#{template_path}" do
 	source "beanstalkd.erb"
 	owner "root"
