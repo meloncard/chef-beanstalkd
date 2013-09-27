@@ -6,19 +6,20 @@
 #
 
 remote_file "/tmp/beanstalkd-#{node[:beanstalkd][:version]}.tar.gz" do
-  source "https://github.com/kr/beanstalkd/archive/v#{node[:program][:version]}.tar.gz"
+  source "https://github.com/kr/beanstalkd/archive/v#{node[:beanstalkd][:version]}.tar.gz"
   notifies :run, "bash[install_beanstalkd]", :immediately
 end
 
 bash "install_beanstalkd" do
+	not_if "/usr/bin/beanstalkd --version | grep -q '#{node[:beanstalkd][:version]}'"
   user "root"
   cwd "/tmp"
   code <<-EOH
-    tar -zxf beanstalkd-#{node[:program][:version]}.tar.gz
-    (cd beanstalkd-#{node[:program][:version]}/ && ./configure && make && make install)
+    tar -zxf beanstalkd-#{node[:beanstalkd][:version]}.tar.gz
+    (cd beanstalkd-#{node[:beanstalkd][:version]}/ && ./configure && make && make install)
   EOH
   action :nothing
-  
+
   notifies :restart, resources(:service => "beanstalkd")
 end
 
