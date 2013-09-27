@@ -16,7 +16,7 @@ bash "install_beanstalkd" do
   cwd "/tmp"
   code <<-EOH
     tar -zxf beanstalkd-#{node[:beanstalkd][:version]}.tar.gz
-    (cd beanstalkd-#{node[:beanstalkd][:version]}/ && make check && make && make install PREFIX=/usr)
+    (cd beanstalkd-#{node[:beanstalkd][:version]}/ && make check && make install PREFIX=/usr)
   EOH
   action :nothing
 end
@@ -35,6 +35,16 @@ service "beanstalkd" do
 	supports [:start, :stop, :status]
     #starts the service if it's not running and enables it to start at system boot time
 	action :nothing
+end
+
+template "beanstalkd.init" do
+  path "/etc/init.d/beanstalkd"
+  source "beanstalkd.init.erb"
+  owner "root"
+  group "root"
+  mode "0755"
+  notifies :enable, "service[beanstalkd]"
+  notifies :start, "service[beanstalkd]"
 end
 
 # Create the binlog directory
