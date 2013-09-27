@@ -16,7 +16,7 @@ bash "install_beanstalkd" do
   cwd "/tmp"
   code <<-EOH
     tar -zxf beanstalkd-#{node[:beanstalkd][:version]}.tar.gz
-    (cd beanstalkd-#{node[:beanstalkd][:version]}/ && make check && make && make install)
+    (cd beanstalkd-#{node[:beanstalkd][:version]}/ && make check && make && make install PREFIX=/usr)
   EOH
   action :nothing
 end
