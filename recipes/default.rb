@@ -5,6 +5,11 @@
 # Copyright 2012-2013, Escape Studios
 #
 
+user "beanstalkd" do
+	action :create
+  comment 'Beanstalkd user'
+end
+
 remote_file "/tmp/beanstalkd-#{node[:beanstalkd][:version]}.tar.gz" do
   source "https://github.com/kr/beanstalkd/archive/v#{node[:beanstalkd][:version]}.tar.gz"
   notifies :run, "bash[install_beanstalkd]", :immediately
