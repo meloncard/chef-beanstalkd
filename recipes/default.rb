@@ -5,8 +5,21 @@
 # Copyright 2012-2013, Escape Studios
 #
 
-package "beanstalkd" do
-	action :upgrade
+remote_file "/tmp/beanstalkd-#{node[:beanstalkd][:version]}.tar.gz" do
+  source "https://github.com/kr/beanstalkd/archive/v#{node[:program][:version]}.tar.gz"
+  notifies :run, "bash[install_beanstalkd]", :immediately
+end
+
+bash "install_beanstalkd" do
+  user "root"
+  cwd "/tmp"
+  code <<-EOH
+    tar -zxf beanstalkd-#{node[:program][:version]}.tar.gz
+    (cd beanstalkd-#{node[:program][:version]}/ && ./configure && make && make install)
+  EOH
+  action :nothing
+  
+  notifies :restart, resources(:service => "beanstalkd")
 end
 
 case node[:platform]

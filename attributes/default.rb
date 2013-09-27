@@ -9,3 +9,5 @@ default[:beanstalkd][:opts] = {}
 
 #Ubuntu only
 default[:beanstalkd][:start_during_boot] = false
+
+default[:beanstalkd][:version] = "1.9"
