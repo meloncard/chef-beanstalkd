@@ -19,8 +19,6 @@ bash "install_beanstalkd" do
     (cd beanstalkd-#{node[:beanstalkd][:version]}/ && ./configure && make && make install)
   EOH
   action :nothing
-
-  notifies :restart, resources(:service => "beanstalkd")
 end
 
 case node[:platform]
